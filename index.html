@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark light">
+    <title>Speaker Bench</title>
+    <meta
+      name="description"
+      content="A lightweight speaker calibration web app with white noise, sine sweeps, channel routing, and meters."
+    >
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="topbar" aria-label="Transport and status">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+          <div>
+            <h1>Speaker Bench</h1>
+            <p id="statusText">Audio idle</p>
+          </div>
+        </div>
+
+        <div class="transport">
+          <button class="primary-button" id="toggleAudio" type="button">
+            <span class="icon" aria-hidden="true">▶</span>
+            <span id="toggleLabel">Start</span>
+          </button>
+          <button class="icon-button" id="panicButton" type="button" aria-label="Stop audio" title="Stop audio">
+            <span aria-hidden="true">■</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="workspace" aria-label="Speaker test controls">
+        <aside class="control-rail" aria-label="Controls">
+          <section class="panel compact">
+            <div class="panel-heading">
+              <h2>Signal</h2>
+            </div>
+            <div class="segmented" role="radiogroup" aria-label="Signal mode">
+              <button class="segment active" type="button" role="radio" aria-checked="true" data-mode="white">White</button>
+              <button class="segment" type="button" role="radio" aria-checked="false" data-mode="pink">Pink</button>
+              <button class="segment" type="button" role="radio" aria-checked="false" data-mode="tone">Tone</button>
+              <button class="segment" type="button" role="radio" aria-checked="false" data-mode="sweep">Sweep</button>
+            </div>
+          </section>
+
+          <section class="panel compact">
+            <div class="panel-heading">
+              <h2>Channel</h2>
+            </div>
+            <div class="segmented" role="radiogroup" aria-label="Output channel">
+              <button class="segment active" type="button" role="radio" aria-checked="true" data-channel="both">Both</button>
+              <button class="segment" type="button" role="radio" aria-checked="false" data-channel="left">Left</button>
+              <button class="segment" type="button" role="radio" aria-checked="false" data-channel="right">Right</button>
+              <button class="segment" type="button" role="radio" aria-checked="false" data-channel="alternate">Alt</button>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-heading">
+              <h2>Level</h2>
+              <output id="volumeReadout" for="volumeSlider">-18 dB</output>
+            </div>
+            <input id="volumeSlider" type="range" min="-60" max="0" step="1" value="-18" aria-label="Output level">
+            <div class="fine-grid">
+              <button class="chip" type="button" data-level="-30">-30</button>
+              <button class="chip" type="button" data-level="-24">-24</button>
+              <button class="chip" type="button" data-level="-18">-18</button>
+              <button class="chip danger-chip" type="button" data-level="-12">-12</button>
+            </div>
+          </section>
+
+          <section class="panel frequency-panel" id="tonePanel">
+            <div class="panel-heading">
+              <h2>Tone</h2>
+              <output id="toneReadout" for="toneFrequency">1000 Hz</output>
+            </div>
+            <input id="toneFrequency" type="range" min="20" max="20000" step="1" value="1000" aria-label="Tone frequency">
+            <div class="fine-grid">
+              <button class="chip" type="button" data-tone="250">250</button>
+              <button class="chip" type="button" data-tone="500">500</button>
+              <button class="chip" type="button" data-tone="1000">1k</button>
+              <button class="chip" type="button" data-tone="4000">4k</button>
+            </div>
+          </section>
+
+          <section class="panel" id="sweepPanel">
+            <div class="panel-heading">
+              <h2>Sweep</h2>
+              <output id="sweepReadout">20 Hz → 20 kHz</output>
+            </div>
+            <label class="field-row">
+              <span>Start</span>
+              <input id="sweepStart" type="number" min="10" max="20000" step="1" value="20" inputmode="numeric">
+            </label>
+            <label class="field-row">
+              <span>End</span>
+              <input id="sweepEnd" type="number" min="10" max="22000" step="1" value="20000" inputmode="numeric">
+            </label>
+            <label class="field-row">
+              <span>Time</span>
+              <input id="sweepDuration" type="number" min="1" max="120" step="1" value="12" inputmode="numeric">
+            </label>
+            <div class="toggle-row">
+              <label class="switch">
+                <input id="logSweep" type="checkbox" checked>
+                <span aria-hidden="true"></span>
+                <strong>Log sweep</strong>
+              </label>
+              <label class="switch">
+                <input id="loopSweep" type="checkbox">
+                <span aria-hidden="true"></span>
+                <strong>Loop</strong>
+              </label>
+            </div>
+          </section>
+        </aside>
+
+        <section class="instrument-stack" aria-label="Meters and analyzer">
+          <section class="meter-band" aria-label="Output meters">
+            <div class="meter-card">
+              <div class="meter-label">
+                <span>Left</span>
+                <output id="leftDb">-∞ dB</output>
+              </div>
+              <div class="meter-track" aria-hidden="true">
+                <span id="leftMeter"></span>
+              </div>
+            </div>
+            <div class="meter-card">
+              <div class="meter-label">
+                <span>Right</span>
+                <output id="rightDb">-∞ dB</output>
+              </div>
+              <div class="meter-track" aria-hidden="true">
+                <span id="rightMeter"></span>
+              </div>
+            </div>
+            <div class="meter-card mic-card">
+              <div class="meter-label">
+                <span>Mic</span>
+                <output id="micDb">Off</output>
+              </div>
+              <div class="meter-track" aria-hidden="true">
+                <span id="micMeter"></span>
+              </div>
+              <button id="micButton" class="small-button" type="button">Enable mic meter</button>
+            </div>
+          </section>
+
+          <section class="scope-panel" aria-label="Signal analyzer">
+            <div class="scope-header">
+              <div>
+                <h2 id="scopeTitle">White noise</h2>
+                <p id="scopeMeta">Both channels · -18 dB</p>
+              </div>
+              <div class="sweep-chip" id="sweepProgress">Ready</div>
+            </div>
+            <canvas id="analyzerCanvas" width="960" height="420" aria-label="Spectrum analyzer"></canvas>
+          </section>
+
+          <section class="utility-strip" aria-label="Calibration tools">
+            <button class="utility-button" type="button" id="identifyLeft">
+              <span aria-hidden="true">L</span>
+              <strong>Ping left</strong>
+            </button>
+            <button class="utility-button" type="button" id="identifyRight">
+              <span aria-hidden="true">R</span>
+              <strong>Ping right</strong>
+            </button>
+            <button class="utility-button" type="button" id="polarityPulse">
+              <span aria-hidden="true">±</span>
+              <strong>Polarity pulse</strong>
+            </button>
+            <button class="utility-button" type="button" id="resetSettings">
+              <span aria-hidden="true">↺</span>
+              <strong>Reset</strong>
+            </button>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>
