@@ -2,12 +2,18 @@
 
 A lightweight static web app for speaker checks and quick calibration:
 
+[Open Speaker Bench](https://punchbrotv.github.io/speaker-test/)
+
 - White noise and pink noise
 - Sine tone and sine sweep modes
 - Left, right, both, and alternating channel routing
 - Output level control with live left/right meters
 - Optional microphone input meter for relative room checks
 - Channel pings and a polarity pulse utility
+
+## Share Summary
+
+Use the copy in [LINKEDIN_SUMMARY.md](LINKEDIN_SUMMARY.md) for a quick LinkedIn post or project blurb.
 
 ## Run Locally
 
@@ -21,7 +27,9 @@ Then open `http://localhost:4173`.
 
 ## Deploy To GitHub Pages
 
-This repo includes a GitHub Actions workflow that publishes the static files from the repository root to GitHub Pages.
+This repo includes a GitHub Actions workflow that publishes the static files from the repository root to GitHub Pages:
+
+<https://punchbrotv.github.io/speaker-test/>
 
 1. Push this folder to a GitHub repository.
 2. In the repository settings, set Pages source to **GitHub Actions**.
