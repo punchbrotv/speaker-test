@@ -1,8 +1,10 @@
 # Speaker Bench
 
-A lightweight static web app for speaker checks and quick calibration:
+A lightweight static web app for speaker checks and quick calibration.
 
-[Open Speaker Bench](https://punchbrotv.github.io/speaker-test/)
+Live app: [https://punchbrotv.github.io/speaker-test/](https://punchbrotv.github.io/speaker-test/)
+
+## Summary
 
 - White noise and pink noise
 - Sine tone and sine sweep modes
@@ -10,10 +12,6 @@ A lightweight static web app for speaker checks and quick calibration:
 - Output level control with live left/right meters
 - Optional microphone input meter for relative room checks
 - Channel pings and a polarity pulse utility
-
-## Share Summary
-
-Use the copy in [LINKEDIN_SUMMARY.md](LINKEDIN_SUMMARY.md) for a quick LinkedIn post or project blurb.
 
 ## Run Locally
 
